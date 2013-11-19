@@ -6,24 +6,19 @@ import java.util.List;
 public class TestReport {
     private List<TestListener> testListeners;
     private int runTests;
-    private int oktest;
     private int errortest;
     private int failedtest;
-    private boolean firsttimeintest;
     private PatternRecognizer recognizerExpressionsTestcase;
     private PatternRecognizer recognizerExpressionsTestsuite;
     private RecognizerTag recognizerTags;
 
     public void setFirsttimeintest(boolean firsttimeintest) {
-        this.firsttimeintest = firsttimeintest;
     }
     public TestReport() {
         testListeners = new ArrayList<TestListener>();
         runTests = 0;
-        oktest=0;
         errortest=0;
         failedtest=0;
-        firsttimeintest=true;
         recognizerExpressionsTestcase = null;
         recognizerExpressionsTestsuite=null;
         recognizerTags = null;

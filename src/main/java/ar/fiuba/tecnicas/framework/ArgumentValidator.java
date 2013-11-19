@@ -4,7 +4,6 @@ package ar.fiuba.tecnicas.framework;
 // y se los envia a testrunner
 
 import ar.fiuba.tecnicas.framework.JTest.TestRunner;
-import com.sun.javaws.exceptions.InvalidArgumentException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,10 +32,10 @@ public class ArgumentValidator {
     private boolean isNotRegExpOption(){
         return ((!args.contains(regexptestcaseopt))&&(!args.contains(regexptestsuiteopt)));
     }
-    public void start() throws InvalidArgumentException{
+    public void start() throws IllegalArgumentException {
         if (args.size()>0){
             if (badOption() || badArgAmount()){
-                throw new InvalidArgumentException(new String[]{"Bad options"});
+                throw new IllegalArgumentException("Bad options");
             }
             setArgumentToRunner();
         }

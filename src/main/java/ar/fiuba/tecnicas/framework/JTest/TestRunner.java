@@ -2,7 +2,6 @@ package ar.fiuba.tecnicas.framework.JTest;
 
 import ar.fiuba.tecnicas.framework.ArgumentValidator;
 import ar.fiuba.tecnicas.framework.Usage;
-import com.sun.javaws.exceptions.InvalidArgumentException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,12 +59,12 @@ public class TestRunner {
                 System.exit(FAILURE_EXIT);
             }
             System.exit(SUCCESS_EXIT);
-        }catch (InvalidArgumentException badarg){
-            Usage usage= new Usage();
-            System.err.println(usage);
-            System.exit(EXCEPTION_EXIT);
         }catch (PatternSyntaxException patternexcp){
             System.err.println("Invalid regular expression 's syntax");
+            System.exit(EXCEPTION_EXIT);
+        }catch (IllegalArgumentException badarg){
+            Usage usage= new Usage();
+            System.err.println(usage);
             System.exit(EXCEPTION_EXIT);
         } catch (Throwable e) {
             System.err.println(e.getMessage());

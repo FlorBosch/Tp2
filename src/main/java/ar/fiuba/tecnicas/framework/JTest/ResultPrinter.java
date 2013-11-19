@@ -1,7 +1,6 @@
 package ar.fiuba.tecnicas.framework.JTest;
 
 import java.io.PrintStream;
-import java.text.NumberFormat;
 
 public class ResultPrinter implements TestListener{
     private PrintStream printStream;
@@ -18,9 +17,6 @@ public class ResultPrinter implements TestListener{
         printStream.println("Run: " + result.runCount());
         printStream.println("Failures: " + result.failureCount());
         printStream.println("Errors: " + result.errorCount());
-    }
-    private String elapsedTimeAsString(long runTime) {
-        return NumberFormat.getInstance().format((double) runTime / 1000);
     }
     @Override
     public void addSuccess(TestCase test, String time) {
