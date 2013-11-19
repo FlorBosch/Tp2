@@ -9,13 +9,16 @@ public class CaseUse1 implements TestCreator {
         TestCase test1 = new MyTestCase("T1");
         TestCase test2 = new MyTestCase("T2");
         TestCase test3 = new MyTestCase("T3");
+        TestCase testTimeOut = new TestCaseTimeOut("TestTimeOut");
 
         test1.addTag("SLOW");
         test3.addTag("SLOW");
+        testTimeOut.addTag("SLOW");
 
         suite.addTest(test1);
         suite.addTest(test2);
         suite.addTest(test3);
+        suite.addTest(testTimeOut);
         return suite;
     }
 

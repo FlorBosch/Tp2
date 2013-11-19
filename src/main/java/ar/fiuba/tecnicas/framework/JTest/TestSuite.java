@@ -76,6 +76,7 @@ public class TestSuite extends Test {
                 exception = running;
             } finally {
                 tearingDown(exception);
+                
                 testReport.print(getTestname()+": "+timer.getTime()+"\n");
             }
             if (exception != null) throw exception;

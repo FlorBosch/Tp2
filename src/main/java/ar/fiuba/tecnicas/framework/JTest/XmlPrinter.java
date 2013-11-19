@@ -31,13 +31,15 @@ public class XmlPrinter implements TestListener {
     }
 
     @Override
-    public void addFailure(Test test, String time, Throwable throwable) {
-        printTestCaseWithError(test, time, throwable,"failure");
+    public void addFailure(Test test, double time, Throwable throwable) {
+	String printTime = time + " [miliseg]";
+        printTestCaseWithError(test, printTime, throwable,"failure");
     }
 
     @Override
-    public void addError(Test test, String time, Throwable throwable) {
-        printTestCaseWithError(test, time, throwable,"error");
+    public void addError(Test test, double time, Throwable throwable) {
+	String printTime = time + " [miliseg]";
+        printTestCaseWithError(test, printTime, throwable,"error");
     }
 
     private void printTestCaseWithError(Test test, String time, Throwable throwable, String type) {
@@ -51,9 +53,9 @@ public class XmlPrinter implements TestListener {
     }
 
     @Override
-    public void addSuccess(TestCase test, String time) {
+    public void addSuccess(TestCase test, double time) {
         nameCase = test.toString();
-        this.time = time;
+        this.time = time + " [miliseg]";
         printHeaderTestCase();
         printAtribuesTestCase();
     }

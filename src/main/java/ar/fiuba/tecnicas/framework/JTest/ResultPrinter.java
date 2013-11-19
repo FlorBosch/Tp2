@@ -19,12 +19,12 @@ public class ResultPrinter implements TestListener{
         printStream.println("Failures: " + result.failureCount());
         printStream.println("Errors: " + result.errorCount());
     }
-    private String elapsedTimeAsString(long runTime) {
+    private String elapsedTimeAsString(double runTime) {
         return NumberFormat.getInstance().format((double) runTime / 1000);
     }
     @Override
-    public void addSuccess(TestCase test, String time) {
-        printStream.println("[Ok]\t\t" + test + "\t\t\t\t\t" + time);
+    public void addSuccess(TestCase test, double time) {
+        printStream.println("[Ok]\t\t" + test + "\t\t\t\t\t" + time + " [miliseg]");
     }
     @Override
     public void insertHSeparator() {
@@ -33,12 +33,12 @@ public class ResultPrinter implements TestListener{
     }
 
     @Override
-    public void addFailure(Test test, String time, Throwable throwable) {
-        printStream.println("[Failure]\t" + test + "\t\t" + time);
+    public void addFailure(Test test, double time, Throwable throwable) {
+        printStream.println("[Failure]\t" + test + "\t\t\t\t" + time + " [miliseg]");
     }
     @Override
-    public void addError(Test test, String time, Throwable throwable) {
-        printStream.println("[Error]\t\t" + test + "\t\t" + time);
+    public void addError(Test test, double time, Throwable throwable) {
+        printStream.println("[Error]\t\t" + test + "\t\t\t\t" + time + " [miliseg]");
     }
 
     @Override
