@@ -1,10 +1,17 @@
 package ar.fiuba.tecnicas.framework.JTest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import ar.fiuba.tecnicas.framework.JTest.rerunner.FastStorage;
+import ar.fiuba.tecnicas.framework.JTest.rerunner.RerunStorage;
+import ar.fiuba.tecnicas.framework.JTest.rerunner.XMLStorage;
 
 public class TestReport {
 	private List<TestListener> testListeners;
+	private List<RerunStorage> rerunStorages;
+	
 	private int runTests;
 	private int errortest;
 	private int failedtest;
@@ -17,6 +24,8 @@ public class TestReport {
 
 	public TestReport() {
 		testListeners = new ArrayList<TestListener>();
+		rerunStorages = Arrays.asList(new XMLStorage(), new FastStorage());
+		
 		runTests = 0;
 		errortest = 0;
 		failedtest = 0;
@@ -48,6 +57,9 @@ public class TestReport {
 		for (TestListener testListener : testListeners) {
 			testListener.addSuccess(test, timer.getTime());
 		}
+		
+		for (RerunStorage rerunStorage : rerunStorages)
+			rerunStorage.addPassedTestName(test.getTestname());
 	}
 
 	public void addFailure(Test test, Timer timer, Throwable throwable) {
