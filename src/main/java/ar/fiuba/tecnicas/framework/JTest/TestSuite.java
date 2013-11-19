@@ -63,7 +63,7 @@ public class TestSuite extends Test {
     }
     @Override
     public void run(TestReport testReport) throws Throwable {
-        Timer timer= new Timer(System.nanoTime());
+ //       Timer timer= new Timer(System.nanoTime());
         if (testReport.testsuiteNameMatchRegularExpression(this)){
             Throwable exception = null;
             setUp();
@@ -77,7 +77,7 @@ public class TestSuite extends Test {
             } finally {
                 tearingDown(exception);
                 
-                testReport.print(getTestname()+": "+timer.getTime()+"\n");
+   //             testReport.print(getTestname()+": "+timer.getTime()+"\n");
             }
             if (exception != null) throw exception;
         }

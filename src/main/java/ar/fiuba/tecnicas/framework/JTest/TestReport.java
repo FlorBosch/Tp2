@@ -1,30 +1,34 @@
 package ar.fiuba.tecnicas.framework.JTest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import ar.fiuba.tecnicas.framework.JTest.rerunner.FastStorage;
+import ar.fiuba.tecnicas.framework.JTest.rerunner.RerunStorage;
+import ar.fiuba.tecnicas.framework.JTest.rerunner.XMLStorage;
 
 public class TestReport {
     private List<TestListener> testListeners;
+    private List<RerunStorage> rerunStorages;
+
     private int runTests;
-    private int oktest;
     private int errortest;
     private int failedtest;
-    private boolean firsttimeintest;
     private PatternRecognizer recognizerExpressionsTestcase;
     private PatternRecognizer recognizerExpressionsTestsuite;
     private RecognizerTag recognizerTags;
 
     public void setFirsttimeintest(boolean firsttimeintest) {
-	this.firsttimeintest = firsttimeintest;
     }
 
     public TestReport() {
 	testListeners = new ArrayList<TestListener>();
+	rerunStorages = Arrays.asList(new XMLStorage(), new FastStorage());
+
 	runTests = 0;
-	oktest = 0;
 	errortest = 0;
 	failedtest = 0;
-	firsttimeintest = true;
 	recognizerExpressionsTestcase = null;
 	recognizerExpressionsTestsuite = null;
 	recognizerTags = null;
@@ -53,13 +57,16 @@ public class TestReport {
 	for (TestListener testListener : testListeners) {
 	    testListener.addSuccess(test, time);
 	}
+
+	for (RerunStorage rerunStorage : rerunStorages)
+	    rerunStorage.addPassedTestName(test.getTestname());
     }
 
     public void addFailure(Test test, double time, Throwable throwable) {
 	failedtest++;
 	runTests++;
 	for (TestListener testListener : testListeners) {
-	    testListener.addFailure(test, time , throwable);
+	    testListener.addFailure(test, time, throwable);
 	}
     }
 
@@ -67,7 +74,7 @@ public class TestReport {
 	errortest++;
 	runTests++;
 	for (TestListener testListener : testListeners) {
-	    testListener.addError(test, time , throwable);
+	    testListener.addError(test, time, throwable);
 	}
     }
 
@@ -138,4 +145,5 @@ public class TestReport {
     public int errorCount() {
 	return errortest;
     }
+
 }

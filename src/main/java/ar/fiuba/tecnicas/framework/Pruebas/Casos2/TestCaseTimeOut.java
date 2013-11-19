@@ -13,10 +13,10 @@ public class TestCaseTimeOut extends TestCase {
     @Override
     public void runTest() {
 	try {
-	    Thread.sleep(50);
+	    Thread.sleep(10);
 	} catch (InterruptedException e) {
 	    e.printStackTrace();
-	}
+}
 	Assert.assertTrue(true);
     }
 
