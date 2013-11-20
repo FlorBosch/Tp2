@@ -12,7 +12,7 @@ public class CaseUse2 implements TestCreator {
 
         test1.addTag("SLOW");
         test3.addTag("SLOW");
-        test1.skype();
+        test1.skip();
 
         suite.addTest(test1);
         suite.addTest(test2);

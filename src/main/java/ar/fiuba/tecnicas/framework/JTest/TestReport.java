@@ -11,13 +11,11 @@ import ar.fiuba.tecnicas.framework.JTest.rerunner.XMLStorage;
 public class TestReport {
     private List<TestListener> testListeners;
     private List<RerunStorage> rerunStorages;
+    private TestConditions testConditions;
 
     private int runTests;
-    private int errortest;
-    private int failedtest;
-    private PatternRecognizer recognizerExpressionsTestcase;
-    private PatternRecognizer recognizerExpressionsTestsuite;
-    private RecognizerTag recognizerTags;
+    private int errorTest;
+    private int failedTest;
 
     public void setFirsttimeintest(boolean firsttimeintest) {
     }
@@ -25,31 +23,15 @@ public class TestReport {
     public TestReport() {
 	testListeners = new ArrayList<TestListener>();
 	rerunStorages = Arrays.asList(new XMLStorage(), new FastStorage());
-
+	testConditions = new TestConditions();
 	runTests = 0;
-	errortest = 0;
-	failedtest = 0;
-	recognizerExpressionsTestcase = null;
-	recognizerExpressionsTestsuite = null;
-	recognizerTags = null;
+	errorTest = 0;
+	failedTest = 0;
     }
 
-    public void initializeRecognizerExpression(String testcaseregexp,
-	    String testsuiteregexp) {
-	recognizerExpressionsTestcase = new PatternRecognizer(testcaseregexp);
-	recognizerExpressionsTestsuite = new PatternRecognizer(testsuiteregexp);
-    }
-
-    public void setRecognizerExpressionsTestcase(PatternRecognizer recognizer) {
-	recognizerExpressionsTestcase = recognizer;
-    }
-
-    public void setRecognizerExpressionsTestsuite(PatternRecognizer recognizer) {
-	recognizerExpressionsTestsuite = recognizer;
-    }
-
-    public void setRecognizerTag(RecognizerTag recognizerTags) {
-	this.recognizerTags = recognizerTags;
+    public void initializeConditions(String testCaseRegExp,
+	    String testSuiteRegExp, List<String> argtags) {
+	testConditions.initialize(testCaseRegExp, testSuiteRegExp, argtags);
     }
 
     public void addSuccess(TestCase test, double time) {
@@ -63,7 +45,7 @@ public class TestReport {
     }
 
     public void addFailure(Test test, double time, Throwable throwable) {
-	failedtest++;
+	failedTest++;
 	runTests++;
 	for (TestListener testListener : testListeners) {
 	    testListener.addFailure(test, time, throwable);
@@ -71,7 +53,7 @@ public class TestReport {
     }
 
     public void addError(Test test, double time, Throwable throwable) {
-	errortest++;
+	errorTest++;
 	runTests++;
 	for (TestListener testListener : testListeners) {
 	    testListener.addError(test, time, throwable);
@@ -95,8 +77,9 @@ public class TestReport {
     }
 
     public void run(final TestCase test) {
-	Timer timer = new Timer(System.nanoTime());
-	if (validateTestCase(test)) {
+	Timer timer = new Timer();
+	timer.start();
+	if (testConditions.validateTest(test)) {
 	    try {
 		test.runTestSequence();
 		timer.calculateTime();
@@ -107,27 +90,13 @@ public class TestReport {
 		addFailure(test, timer.getTime(), timeOutException);
 	    } catch (Throwable exception) {
 		addError(test, timer.getTime(), exception);
-	    };
+	    }
+	    ;
 	}
     }
 
-    private boolean validateTestCase(TestCase test) {
-	return (testNameMatchRegularExpression(test))
-		&& validateTagTestCase(test) && !test.isSkype();
-    }
-
-    private boolean validateTagTestCase(TestCase test) {
-	return recognizerTags.validate(test.getTags());
-    }
-
-    private boolean testNameMatchRegularExpression(Test test) {
-	return recognizerExpressionsTestcase == null
-		|| recognizerExpressionsTestcase.validate(test.toString());
-    }
-
-    public boolean testsuiteNameMatchRegularExpression(Test test) {
-	return recognizerExpressionsTestsuite == null
-		|| recognizerExpressionsTestsuite.validate(test.getTestname());
+    public boolean testsuiteNameMatchRegularExpression(TestSuite test) {
+	return testConditions.validateTest(test);
     }
 
     public boolean wasSuccessful() {
@@ -135,7 +104,7 @@ public class TestReport {
     }
 
     public int failureCount() {
-	return failedtest;
+	return failedTest;
     }
 
     public int runCount() {
@@ -143,7 +112,7 @@ public class TestReport {
     }
 
     public int errorCount() {
-	return errortest;
+	return errorTest;
     }
 
 }

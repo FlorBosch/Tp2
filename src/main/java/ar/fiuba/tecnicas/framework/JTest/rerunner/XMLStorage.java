@@ -23,89 +23,94 @@ import org.xml.sax.SAXException;
 
 public class XMLStorage extends RerunStorage {
 
-	private String fileName = "store.xml";
+    private String fileName = "store.xml";
 
-	public XMLStorage() {
-		DocumentBuilderFactory documentFactory = 
-				DocumentBuilderFactory.newInstance();
-		DocumentBuilder documentBuilder;
-		Document document;
+    public XMLStorage() {
+	DocumentBuilderFactory documentFactory = DocumentBuilderFactory
+		.newInstance();
+	DocumentBuilder documentBuilder;
+	Document document;
 
-		try {
-			documentBuilder = documentFactory.newDocumentBuilder();
-			document = documentBuilder.newDocument();
-			Element passedTests = document.createElement("passedtests");
-			document.appendChild(passedTests);
+	try {
+	    documentBuilder = documentFactory.newDocumentBuilder();
+	    document = documentBuilder.newDocument();
+	    Element passedTests = document.createElement("passedtests");
+	    document.appendChild(passedTests);
 
-			TransformerFactory transformerFactory = TransformerFactory
-					.newInstance();
-			Transformer transformer;
+	    TransformerFactory transformerFactory = TransformerFactory
+		    .newInstance();
+	    Transformer transformer;
 
-			transformer = transformerFactory.newTransformer();
-			DOMSource source = new DOMSource(document);
-			StreamResult result = new StreamResult(new File(fileName));
-			transformer.transform(source, result);
-		} 
-		
-		catch (ParserConfigurationException e) { } 
-		catch (TransformerConfigurationException e) { } 
-		catch (TransformerException e) { }
+	    transformer = transformerFactory.newTransformer();
+	    DOMSource source = new DOMSource(document);
+	    StreamResult result = new StreamResult(new File(fileName));
+	    transformer.transform(source, result);
 	}
 
-	@Override
-	public void addPassedTestName(String testName) {
-		DocumentBuilderFactory documentFactory = 
-				DocumentBuilderFactory.newInstance();
+	catch (ParserConfigurationException e) {
+	} catch (TransformerConfigurationException e) {
+	} catch (TransformerException e) {
+	}
+    }
 
-		try {
-			DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
-			Document document = documentBuilder.parse(fileName);
-			Node passedtests = document.getFirstChild();
-			
-			Element passedtest = document.createElement("passedtest");
-			passedtest.setAttribute("name", testName);
-			passedtests.appendChild(passedtest);
-			
-			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-			Transformer transformer = transformerFactory.newTransformer();
-			DOMSource source = new DOMSource(document);
-			StreamResult result = new StreamResult(new File(fileName));
-			transformer.transform(source, result);
-		} 
-		
-		catch (ParserConfigurationException e) { } 
-		catch (SAXException e) { } 
-		catch (IOException e) { } 
-		catch (TransformerConfigurationException e) { } 
-		catch (TransformerException e) { }
+    @Override
+    public void addPassedTestName(String testName) {
+	DocumentBuilderFactory documentFactory = DocumentBuilderFactory
+		.newInstance();
+
+	try {
+	    DocumentBuilder documentBuilder = documentFactory
+		    .newDocumentBuilder();
+	    Document document = documentBuilder.parse(fileName);
+	    Node passedtests = document.getFirstChild();
+
+	    Element passedtest = document.createElement("passedtest");
+	    passedtest.setAttribute("name", testName);
+	    passedtests.appendChild(passedtest);
+
+	    TransformerFactory transformerFactory = TransformerFactory
+		    .newInstance();
+	    Transformer transformer = transformerFactory.newTransformer();
+	    DOMSource source = new DOMSource(document);
+	    StreamResult result = new StreamResult(new File(fileName));
+	    transformer.transform(source, result);
 	}
 
-	@Override
-	public List<String> getPassedTestsNames() {
-		
-		List<String> passedTestsNames =
-				new ArrayList<String>();
-		DocumentBuilderFactory documentFactory = 
-				DocumentBuilderFactory.newInstance();
-
-		try {
-			DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
-			Document document = documentBuilder.parse(fileName);
-			Node passedtests = document.getFirstChild();
-			NodeList passedTestsList = passedtests.getChildNodes();
-			
-			for(int i = 0; i < passedTestsList.getLength(); i++) {
-				Node passedTest = passedTestsList.item(i);
-				String testName = ((Element) passedTest).getAttribute("name");
-				passedTestsNames.add(testName);
-			}
-		}
-		
-		catch (ParserConfigurationException e) { } 
-		catch (SAXException e) { } 
-		catch (IOException e) { } 
-		
-		return passedTestsNames;
+	catch (ParserConfigurationException e) {
+	} catch (SAXException e) {
+	} catch (IOException e) {
+	} catch (TransformerConfigurationException e) {
+	} catch (TransformerException e) {
 	}
+    }
+
+    @Override
+    public List<String> getPassedTestsNames() {
+
+	List<String> passedTestsNames = new ArrayList<String>();
+	DocumentBuilderFactory documentFactory = DocumentBuilderFactory
+		.newInstance();
+
+	try {
+	    DocumentBuilder documentBuilder = documentFactory
+		    .newDocumentBuilder();
+	    Document document = documentBuilder.parse(fileName);
+	    Node passedtests = document.getFirstChild();
+	    NodeList passedTestsList = passedtests.getChildNodes();
+
+	    for (int i = 0; i < passedTestsList.getLength(); i++) {
+		Node passedTest = passedTestsList.item(i);
+		String testName = ((Element) passedTest).getAttribute("name");
+		passedTestsNames.add(testName);
+	    }
+	}
+
+	catch (ParserConfigurationException e) {
+	} catch (SAXException e) {
+	} catch (IOException e) {
+	}
+
+	return passedTestsNames;
+    }
 
 }

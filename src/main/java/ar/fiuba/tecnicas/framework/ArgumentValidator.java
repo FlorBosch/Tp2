@@ -14,7 +14,7 @@ public class ArgumentValidator {
 	public static final String regexptestcaseopt = "-tcregexp";
 	public static final String regexptestsuiteopt = "-tsregexp";
 	public static final String tagstestcaseopt = "-tctags";
-	public static final String rerunFailedOpt = "-rerun";
+//	public static final String rerunFailedOpt = "-rerun";
 
 	public ArgumentValidator(TestRunner testrunner, String[] args) {
 		this.testrunner = testrunner;
@@ -25,16 +25,16 @@ public class ArgumentValidator {
 		int regexptestcaseidx = args.indexOf(regexptestcaseopt);
 		int regexptestsuiteidx = args.indexOf(regexptestsuiteopt);
 		int tagsidx = args.indexOf(tagstestcaseopt);
-		int rerunIdx = args.indexOf(rerunFailedOpt);
+//		int rerunIdx = args.indexOf(rerunFailedOpt);
 		
 		if (regexptestcaseidx != -1)
-			testrunner.setRegexpTestcase(args.get(regexptestcaseidx + 1));
+			testrunner.setRegExpTestCase(args.get(regexptestcaseidx + 1));
 		if (regexptestsuiteidx != -1)
-			testrunner.setRegexpTestsuite(args.get(regexptestsuiteidx + 1));
+			testrunner.setRegExpTestSuite(args.get(regexptestsuiteidx + 1));
 		if (tagsidx != -1)
 			testrunner.setArgtags(args.subList(tagsidx + 1, args.size()));
-		if (rerunIdx != -1)
-			testrunner.setReRunMode();		
+//		if (rerunIdx != -1)
+//			testrunner.setReRunMode();		
 	}
 
 	private boolean badOption() {
@@ -56,8 +56,8 @@ public class ArgumentValidator {
 	}
 
 	private boolean badArgAmount() {
-		if (args.contains(rerunFailedOpt))
-			return false;
+//		if (args.contains(rerunFailedOpt))
+//			return false;
 		return args.size() % 2 != 0;
 	}
 }

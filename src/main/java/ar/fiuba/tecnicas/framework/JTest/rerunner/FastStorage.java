@@ -4,19 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FastStorage extends RerunStorage {
-	
-	List<String> passedTestsNames;
-	
-	public FastStorage() {
-		this.passedTestsNames = new ArrayList<String>();
-	}
 
-	public void addPassedTestName(String testName) {
-		this.passedTestsNames.add(testName);
-	}
+    List<String> passedTestsNames;
 
-	public List<String> getPassedTestsNames() {
-		return this.passedTestsNames;
-	}
+    public FastStorage() {
+	this.passedTestsNames = new ArrayList<String>();
+    }
+
+    public void addPassedTestName(String testName) {
+	this.passedTestsNames.add(testName);
+    }
+
+    public List<String> getPassedTestsNames() {
+	return this.passedTestsNames;
+    }
 
 }

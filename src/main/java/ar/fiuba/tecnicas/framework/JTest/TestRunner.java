@@ -11,105 +11,100 @@ import java.util.regex.PatternSyntaxException;
  Responsabilidad: Crear y correr test ya definidos o un grupo de test definidios filtrado con expresiones regulares
  */
 public class TestRunner {
-	public static final int SUCCESS_EXIT = 0;
-	public static final int FAILURE_EXIT = 1;
-	public static final int EXCEPTION_EXIT = 2;
+    public static final int SUCCESS_EXIT = 0;
+    public static final int FAILURE_EXIT = 1;
+    public static final int EXCEPTION_EXIT = 2;
 
-	private ResultPrinter resultPrinter;
-	private String regexpTestcase;
-	private String regexpTestsuite;
-	private List<String> argtags;
-	private boolean reRunMode;
-	private static TestCreator testCreator;
+    private ResultPrinter resultPrinter;
+    private String regExpTestcase;
+    private String regExpTestsuite;
+    private List<String> argtags;
+    private boolean reRunMode;
+    private static TestCreator testCreator;
 
-	public TestRunner() {
-		this.resultPrinter = new ResultPrinter(System.out);
-		regexpTestcase = "";
-		regexpTestsuite = "";
-		argtags = new ArrayList<String>();
+    public TestRunner() {
+	this.resultPrinter = new ResultPrinter(System.out);
+	regExpTestcase = "";
+	regExpTestsuite = "";
+	argtags = new ArrayList<String>();
 
+    }
+
+    public void setListener(TestListener listener) {
+
+    }
+
+    public void setRegExpTestCase(String regexpTestCase) {
+	this.regExpTestcase = regexpTestCase;
+    }
+
+    public void setRegExpTestSuite(String regexpTestSuite) {
+	this.regExpTestsuite = regexpTestSuite;
+    }
+
+    public void setArgtags(List<String> argtags) {
+	this.argtags = argtags;
+    }
+
+    public static void setCreatorTest(TestCreator testCreator) {
+	TestRunner.testCreator = testCreator;
+    }
+
+    public static void main(String args[]) {
+	try {
+	    TestRunner testRunner = new TestRunner();
+	    ArgumentValidator argvalidate = new ArgumentValidator(testRunner,
+		    args);
+	    argvalidate.start();
+	    TestReport testReport = testRunner.start();
+	    if (!testReport.wasSuccessful()) {
+		System.exit(FAILURE_EXIT);
+	    }
+	    System.exit(SUCCESS_EXIT);
 	}
 
-	public void setListener(TestListener listener) {
-
+	catch (PatternSyntaxException patternexcp) {
+	    System.err.println("Invalid regular expression 's syntax");
+	    System.exit(EXCEPTION_EXIT);
 	}
 
-	public void setRegexpTestcase(String regexpTestcase) {
-		this.regexpTestcase = regexpTestcase;
+	catch (IllegalArgumentException badarg) {
+	    Usage usage = new Usage();
+	    System.err.println(usage);
+	    System.exit(EXCEPTION_EXIT);
 	}
 
-	public void setRegexpTestsuite(String regexpTestsuite) {
-		this.regexpTestsuite = regexpTestsuite;
+	catch (Throwable e) {
+	    System.err.println(e.getMessage());
+	    System.exit(EXCEPTION_EXIT);
 	}
+    }
 
-	public void setArgtags(List<String> argtags) {
-		this.argtags = argtags;
-	}
+    private Test getTest() throws Exception {
+	return testCreator.getTest();
+    }
 
-	public static void setCreatorTest(TestCreator testCreator) {
-		TestRunner.testCreator = testCreator;
-	}
+    private TestReport start() throws Throwable {
+	Test test = getTest();
+	return doRun(test);
+    }
 
-	public static void main(String args[]) {
-		try {
-			TestRunner testRunner = new TestRunner();
-			ArgumentValidator argvalidate = new ArgumentValidator(testRunner,
-					args);
-			argvalidate.start();
-			TestReport testreport = testRunner.start();
-			if (!testreport.wasSuccessful()) {
-				System.exit(FAILURE_EXIT);
-			}
-			System.exit(SUCCESS_EXIT);
-		} 
-		
-		catch (PatternSyntaxException patternexcp) {
-			System.err.println("Invalid regular expression 's syntax");
-			System.exit(EXCEPTION_EXIT);
-		} 
-		
-		catch (IllegalArgumentException badarg) {
-			Usage usage = new Usage();
-			System.err.println(usage);
-			System.exit(EXCEPTION_EXIT);
-		} 
-		
-		catch (Throwable e) {
-			System.err.println(e.getMessage());
-			System.exit(EXCEPTION_EXIT);
-		}
-	}
+    private TestReport doRun(Test suite) throws Throwable {
+	TestReport result = createTestReport();
+	suite.run(result);
+	resultPrinter.printFooter(result);
+	return result;
+    }
 
-	private Test getTest() throws Exception {
-		return testCreator.getTest();
-	}
+    private TestReport createTestReport() {
+	TestReport result = new TestReport();
+	result.initializeConditions(regExpTestcase, regExpTestsuite, argtags);
+	result.addListener(resultPrinter);
+	result.addListener(new XmlPrinter());
+	return result;
+    }
 
-	private TestReport start() throws Throwable {
-		Test test = getTest();
-		return doRun(test);
-	}
-
-	private TestReport doRun(Test suite) throws Throwable {
-		TestReport result = createTestReport();
-		suite.run(result);
-		resultPrinter.printFooter(result);
-		return result;
-	}
-
-	private TestReport createTestReport() {
-		TestReport result = new TestReport();
-
-		result.setRecognizerExpressionsTestcase(new PatternRecognizer(
-				regexpTestcase));
-		result.setRecognizerExpressionsTestsuite(new PatternRecognizer(
-				regexpTestsuite));
-		result.setRecognizerTag(new RecognizerTag(argtags));
-		result.addListener(resultPrinter);
-		result.addListener(new XmlPrinter());
-		return result;
-	}
-
-	public void setReRunMode() {
-		this.reRunMode = true;
-	}
+    public void setReRunMode() {
+	this.reRunMode = true;
+    }
 }
