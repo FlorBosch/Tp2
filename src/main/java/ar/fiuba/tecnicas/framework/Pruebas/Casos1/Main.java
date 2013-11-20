@@ -5,7 +5,8 @@ import ar.fiuba.tecnicas.framework.JTest.TestRunner;
 public class Main {
 
     public static void main(String args[]) {
-        TestRunner.setCreatorTest(new AllTests());
-        TestRunner.main(args);
+        TestRunner runner = new TestRunner();
+	runner.setCreatorTest(new AllTests());
+        runner.run(args);
     }
 }

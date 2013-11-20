@@ -20,6 +20,7 @@ public class TestRunner {
     private String regExpTestsuite;
     private List<String> argtags;
     private boolean reRunMode;
+    private TestReport testReport; 
     private static TestCreator testCreator;
 
     public TestRunner() {
@@ -46,17 +47,16 @@ public class TestRunner {
 	this.argtags = argtags;
     }
 
-    public static void setCreatorTest(TestCreator testCreator) {
+    public void setCreatorTest(TestCreator testCreator) {
 	TestRunner.testCreator = testCreator;
     }
 
-    public static void main(String args[]) {
+    public  void run(String args[]) {
 	try {
-	    TestRunner testRunner = new TestRunner();
-	    ArgumentValidator argvalidate = new ArgumentValidator(testRunner,
+	     ArgumentValidator argvalidate = new ArgumentValidator(this,
 		    args);
 	    argvalidate.start();
-	    TestReport testReport = testRunner.start();
+	    testReport = start();
 	    if (!testReport.wasSuccessful()) {
 		System.exit(FAILURE_EXIT);
 	    }

@@ -25,7 +25,8 @@ public class CaseUse2 implements TestCreator {
     // y sólo se ejecuta el test T3
     public static void main(String args[]) {
         TestCreator creatorTest = new CaseUse2();
-        TestRunner.setCreatorTest(creatorTest);
-        TestRunner.main(args);
+        TestRunner runner = new TestRunner();
+        runner.setCreatorTest(creatorTest);
+        runner.run(args);
     }
 }

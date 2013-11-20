@@ -15,9 +15,8 @@ public class FrameworkTest {
     @Test
     public void testFailedTestWithTimeOut() {
 	TestCreator creatorTest = new CaseUse1();
-        TestRunner.setCreatorTest(creatorTest);
-//        TestRunner.main();
-   
+	TestRunner runner = new TestRunner();
+	
         
     }
 

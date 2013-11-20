@@ -37,7 +37,8 @@ public class CaseUse5 implements TestCreator {
     // solo se ejecutaron los test T4 ("test con mysql 1 case") y T5 ("test con mysql 2 use")
     public static void main(String args[]) {
         TestCreator creatorTest = new CaseUse5();
-        TestRunner.setCreatorTest(creatorTest);
-        TestRunner.main(args);
+        TestRunner runner = new TestRunner();
+        runner.setCreatorTest(creatorTest);
+        runner.run(args);
     }
 }
