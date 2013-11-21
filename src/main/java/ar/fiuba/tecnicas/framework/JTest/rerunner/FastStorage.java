@@ -5,18 +5,20 @@ import java.util.List;
 
 public class FastStorage extends RerunStorage {
 
-    List<String> passedTestsNames;
+	List<String> passedTestsNames;
 
-    public FastStorage() {
-	this.passedTestsNames = new ArrayList<String>();
-    }
+	public FastStorage() {
+		this.passedTestsNames = new ArrayList<String>();
+	}
 
-    public void addPassedTestName(String testName) {
-	this.passedTestsNames.add(testName);
-    }
+	@Override
+	public void addPassedTestName(String testName) {
+		this.passedTestsNames.add(testName);
+	}
 
-    public List<String> getPassedTestsNames() {
-	return this.passedTestsNames;
-    }
+	@Override
+	public boolean isTestRunnable(String testName) {
+		return this.passedTestsNames.contains(testName);
+	}
 
 }

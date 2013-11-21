@@ -1,6 +1,5 @@
 package ar.fiuba.tecnicas.framework.Pruebas.Casos2;
 
-
 import ar.fiuba.tecnicas.framework.JTest.Assert;
 import ar.fiuba.tecnicas.framework.JTest.TestCase;
 

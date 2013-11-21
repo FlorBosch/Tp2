@@ -1,8 +1,5 @@
 package ar.fiuba.tecnicas.framework.JTest.rerunner;
 
-//import java.util.ArrayList;
-import java.util.List;
-
 public abstract class RerunStorage {
 	
 	/* hay que decidir como el usuario va a especificar que storage quiere usar.
@@ -13,7 +10,7 @@ public abstract class RerunStorage {
 	} */
 	
 	public abstract void addPassedTestName(String testName);
+		
+	public abstract boolean isTestRunnable(String testName);
 	
-	public abstract List<String> getPassedTestsNames();
-
 }
