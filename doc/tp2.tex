@@ -70,25 +70,65 @@ funcionamiento del framework.
 Se identificaron los siguientes problemas:
 
 \begin{itemize}
+	\item \textbf{Código con errores:} pudimos identificar varios errores en el trabajo que tuvimos que
+		corregir antes de empezar a implementar:
+		
+		\begin{itemize}
+			\item El código contenía warnings referidos a un mal uso de la genericidad de Java.
+			
+			\item Maven no compilaba debido a la omisión de la dependendencia que incluye el paquete 
+				com.sun.javaws.
+				
+		\end{itemize}
+		
+		Estos dos errores fueron los primeros en ser solucionados.
+		
+	\item \textbf{Documentación escasa:} 
+		
+	\item \textbf{Errores funcionales:} se detectaron varias situaciones en dónde el comportamiento
+		no es el esperado de un framework de testing:
+		
+		\begin{itemize}
+			\item El contexto del fixture puede ser modificado por cada caso de prueba, acarreando las
+				modificaciones y derivando en un mal funcionamiento del resto de los tests.
+				El comportamiento esperado era que el contexto no fuese modificado y que el
+				resultado de la corrida sea independiente del orden de ejecución de los tests.
+
+			\item También relacionado con lo anterior, el contexto no permitía almacenar objetos de cualquier 
+				tipo, que es lo esperado de un framework.
+				
+			\item El resultado de la corrida en formato XML no respeta el esquema modelo brindado por 
+				el curso.
+				
+			\item Las corridas de cada test figuraban con un tiempo de ejecución diferente en cada
+				tipo de reporte. Esto se debía a que se detenía el temporizador en la función de
+				escritura.
+
+		\end{itemize}	
+		
+	\item \textbf{Violación de los principios de diseño:} nos resultó muy complicada la tarea de implementar 
+		las funcionalidades nuevas debido a que el diseño no respetaba el principio de clausura ante 
+		cambios y apertura ante modificaciones; imposibilitando, incluso, la adición de ciertas pruebas. 
+		Además, la clase TestReport tiene muchas responsabilidades.	
+
 	\item \textbf{Uso de herramientas tecnológicas:} en la clase TestSuite, a la hora de exportar
 		el reporte se usa reflexión para diferenciar el tipo del Test pasado por parámetro,
 		pudiendo ser alguna de las dos clases que heredan de ella: TestCase o TestSuite.
 		Vemos esto como una violación grave del paradigma de orientación a objetos y de la
 		consigna del enunciado.
 	
-	\item \textbf{Cantidad escasa de pruebas:} notamos que el trabajo tiene muy pocas pruebas
+	\item \textbf{Poca cantidad de pruebas:} notamos que el trabajo tiene muy pocas pruebas
 		implementadas, resultando dificultosa la tarea de añadir funcionalidades y
 		de refactorizar, dado que no podemos asegurar el funcionamiento correcto del trabajo
-		después de haber modificado o agregado código.		 
-
+		después de haber modificado o agregado código.
+		
 	\item \textbf{Estilo:} muchas variables no respetan la convención \textit{camelCase} 
-		de Java, y el estilo de ubicación de llaves y demás no es coherente en el
+		de Java; además, el estilo de ubicación de llaves y demás no es coherente dentro del
 		código.
 		
 \end{itemize}
 
 
-nice to have: diagramas de clases inicial y final.
 \begin{figure}[h!]
 \begin{center}
 	\includegraphics[scale=0.50,angle=90]{./ClassDiagram3}
@@ -108,6 +148,9 @@ Se describe a continuación la responsabilidad de cada clase nueva:
 Blah
 	
 \section{Conclusiones}
+Durante el desarrollo del trabajo práctico nos tuvimos que enfrentar con
+código no escrito por nosotros 
+
 importancia del código bien documentado, documentación actualizada, importancia del principio abierto/cerrado, importancia de un
 set de pruebas unitarias, código legacy por primera vez
 \end{document}
