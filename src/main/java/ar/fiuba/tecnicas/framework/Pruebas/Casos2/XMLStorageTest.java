@@ -14,9 +14,9 @@ public class XMLStorageTest implements TestCreator {
 	@Override
 	public Test getTest() throws Exception {
 		TestSuite suite = new TestSuite("Suite");
-		TestCase test1 = new MyTestCase("Test that doesn't fail");
-		TestCase test2 = new FailedTestCase("Test that fails");
-		TestCase test3 = new MyTestCase("Test that doesn't fail");
+		TestCase test1 = new MyTestCase("Test that doesn't fail (1)");
+		TestCase test2 = new FailedTestCase("Test that fails (2)");
+		TestCase test3 = new MyTestCase("Test that doesn't fail (3)");
 
 		suite.addTest(test1);
 		suite.addTest(test2);
@@ -26,12 +26,14 @@ public class XMLStorageTest implements TestCreator {
 	}
 
 	public static void main(String args[]) {
-		Timer.timeOut = 10;
+		Timer.timeOut = 1000000;
 		
 		TestCreator creatorTest = new XMLStorageTest();
 		TestRunner runner = new TestRunner();
+		
 		runner.setRerunStorage(new XMLStorage());
-		runner.setRerunMode(RerunMode.RECORD);
+		// La prueba se hace a mano, primero hay que correrla con STORE y luego con RERUN (cambiar!)
+		runner.setRerunMode(RerunMode.RERUN);
 		
 		runner.setCreatorTest(creatorTest);
 		runner.run(args);

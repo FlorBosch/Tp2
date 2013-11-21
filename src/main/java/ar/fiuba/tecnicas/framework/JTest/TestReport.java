@@ -10,7 +10,7 @@ public class TestReport {
 	private List<TestListener> testListeners;
 	private RerunStorage rerunStorage;
 	private RerunMode rerunMode;
-	private static TestConditions testConditions;
+	private TestConditions testConditions;
 
 	public void setRerunStorage(RerunStorage rerunStorage) {
 		this.rerunStorage = rerunStorage;
@@ -110,7 +110,7 @@ public class TestReport {
 	}
 	
 	public void setTestConditions(TestConditions conditions) {
-		testConditions = conditions;
+		this.testConditions = conditions;
 	}
 
 }

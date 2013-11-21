@@ -30,13 +30,14 @@ public class TestRunner {
 	public TestRunner() {
 		this.testReport = new TestReport();
 		this.resultPrinter = new ResultPrinter(System.out);
-		regExpTestcase = "";
-		regExpTestsuite = "";
-		argtags = new ArrayList<String>();
+		this.regExpTestcase = "";
+		this.regExpTestsuite = "";
+		this.argtags = new ArrayList<String>();
+		this.rerunMode = RerunMode.RECORD;
 	}
 	
 	public void setRerunStorage(RerunStorage storage) {
-		this.testReport.setRerunStorage(storage);
+		this.storage = storage;
 	}
 
 	public void setListener(TestListener listener) {
@@ -62,12 +63,12 @@ public class TestRunner {
 	public void run(String args[]) {
 		TestConditions conditions = new TestConditions();
 		conditions.initialize(regExpTestcase, regExpTestsuite, argtags, storage, rerunMode);
-		this.testReport.setTestConditions(conditions);
 		
 		try {
 			ArgumentValidator argvalidate = new ArgumentValidator(this, args);
 			argvalidate.start();
-			testReport = start();
+			testReport = start(conditions);
+			storage.saveRunInformation();
 			if (!testReport.wasSuccessful()) {
 				System.exit(FAILURE_EXIT);
 			}
@@ -95,14 +96,13 @@ public class TestRunner {
 		return testCreator.getTest();
 	}
 
-	private TestReport start() throws Throwable {
+	private TestReport start(TestConditions conditions) throws Throwable {
 		Test test = getTest();
-		return doRun(test);
-	}
-
-	private TestReport doRun(Test suite) throws Throwable {
 		TestReport result = createTestReport();
-		suite.run(result);
+		result.setTestConditions(conditions);
+		result.setRerunStorage(storage);
+		result.setMode(rerunMode);
+		test.run(result);
 		resultPrinter.printFooter(result);
 		return result;
 	}
@@ -111,6 +111,7 @@ public class TestRunner {
 		TestReport result = new TestReport();
 		result.addListener(resultPrinter);
 		result.addListener(new XmlPrinter());
+		result.setMode(rerunMode);
 		return result;
 	}
 

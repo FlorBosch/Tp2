@@ -1,16 +1,12 @@
 package ar.fiuba.tecnicas.framework.JTest.rerunner;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -19,104 +15,16 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 public class XMLStorage extends RerunStorage {
 
-	private boolean RERUN;
 	private String fileName = "store.xml";
 	private List<String> passedTests;
 
 	public XMLStorage() {
 		this.passedTests = new ArrayList<String>();
 	}
-	
-	private void initializeOutputFile() {
-		DocumentBuilderFactory documentFactory = DocumentBuilderFactory
-				.newInstance();
-		DocumentBuilder documentBuilder;
-		Document document;
 
-		try {
-			documentBuilder = documentFactory.newDocumentBuilder();
-			document = documentBuilder.newDocument();
-			Element passedTests = document.createElement("passedtests");
-			document.appendChild(passedTests);
-
-			TransformerFactory transformerFactory = TransformerFactory
-					.newInstance();
-			Transformer transformer;
-
-			transformer = transformerFactory.newTransformer();
-			DOMSource source = new DOMSource(document);
-			StreamResult result = new StreamResult(new File(fileName));
-			transformer.transform(source, result);
-		}
-
-		catch (ParserConfigurationException e) {
-		} catch (TransformerConfigurationException e) {
-		} catch (TransformerException e) {
-		}
-	}
-	
-	private void writeTestsToFile() {
-		this.initializeOutputFile();
-		
-		for(String testName : this.passedTests) {
-			DocumentBuilderFactory documentFactory = DocumentBuilderFactory
-					.newInstance();
-	
-			try {
-				DocumentBuilder documentBuilder = documentFactory
-						.newDocumentBuilder();
-				Document document = documentBuilder.parse(fileName);
-				Node passedtests = document.getFirstChild();
-	
-				Element passedtest = document.createElement("passedtest");
-				passedtest.setAttribute("name", testName);
-				passedtests.appendChild(passedtest);
-	
-				TransformerFactory transformerFactory = TransformerFactory
-						.newInstance();
-				Transformer transformer = transformerFactory.newTransformer();
-				DOMSource source = new DOMSource(document);
-				StreamResult result = new StreamResult(new File(fileName));
-				transformer.transform(source, result);
-			}
-	
-			catch (ParserConfigurationException e) {
-			} catch (SAXException e) {
-			} catch (IOException e) {
-			} catch (TransformerConfigurationException e) {
-			} catch (TransformerException e) {
-			}
-		}
-	}
-
-	private void getPassedTests() {
-		DocumentBuilderFactory documentFactory = DocumentBuilderFactory
-				.newInstance();
-
-		try {
-			DocumentBuilder documentBuilder = documentFactory
-					.newDocumentBuilder();
-			Document document = documentBuilder.parse(fileName);
-			Node passedtests = document.getFirstChild();
-			NodeList passedTestsList = passedtests.getChildNodes();
-
-			for (int i = 0; i < passedTestsList.getLength(); i++) {
-				Node passedTest = passedTestsList.item(i);
-				String testName = ((Element) passedTest).getAttribute("name");
-				this.passedTests.add(testName);
-			}
-		}
-
-		catch (ParserConfigurationException e) {
-		} catch (SAXException e) {
-		} catch (IOException e) {
-		}
-	}
-	
 	@Override
 	public void addPassedTestName(String testName) {
 		this.passedTests.add(testName);
@@ -124,7 +32,66 @@ public class XMLStorage extends RerunStorage {
 
 	@Override
 	public boolean isTestRunnable(String testName) {
-		return this.passedTests.contains(testName);
+		return !this.passedTests.contains(testName);
+	}
+
+	@Override
+	public void setMode(RerunMode mode) {
+		if (mode == RerunMode.RERUN) {
+			getPassedTests();
+		}
+	}
+
+	@Override
+	public void saveRunInformation() {
+		try {
+			Document document = DocumentBuilderFactory.newInstance()
+					.newDocumentBuilder().newDocument();
+			Element passedTests = document.createElement("passedtests");
+			document.appendChild(passedTests);
+
+			for (String testName : this.passedTests) {
+				Element passedtest = document.createElement("passedtest");
+				passedtest.setAttribute("name", testName);
+				passedTests.appendChild(passedtest);
+			}
+
+			Transformer transformer = TransformerFactory.newInstance()
+					.newTransformer();
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+			transformer.setOutputProperty(
+					"{http://xml.apache.org/xslt}indent-amount", "4");
+			DOMSource source = new DOMSource(document);
+			StreamResult result = new StreamResult(new File(fileName));
+			transformer.transform(source, result);
+		}
+
+		catch (Exception e) {
+	        System.out.println("Error writing storage file:");
+	        System.out.println(e.getMessage());
+		}
+	}
+
+	private void getPassedTests() {
+		this.passedTests = new ArrayList<String>();
+		try {
+			Document document = DocumentBuilderFactory.newInstance()
+					.newDocumentBuilder().parse(fileName);
+			NodeList passedTestsList = document.getElementsByTagName("passedtest");
+
+			for (int i = 0; i < passedTestsList.getLength(); i++) {
+				Node passedTest = passedTestsList.item(i);
+				Element passedTestElement = (Element) passedTest;				
+				String testName = passedTestElement.getAttribute("name");
+				this.passedTests.add(testName);
+			}
+		}
+
+		catch (Exception e) {
+	        System.out.println("Error reading storage file:");
+	        System.out.println(e.getMessage());
+		}
 	}
 
 }

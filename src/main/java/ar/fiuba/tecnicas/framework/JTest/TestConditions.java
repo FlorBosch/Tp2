@@ -14,11 +14,14 @@ public class TestConditions {
 
 	public void initialize(String testCaseRegExp, String testSuiteRegExp,
 			List<String> tags, RerunStorage storage, RerunMode mode) {
-		recognizerExpressionsTestcase = new PatternRecognizer(testCaseRegExp);
-		recognizerExpressionsTestsuite = new PatternRecognizer(testSuiteRegExp);
-		recognizerTags = new RecognizerTag(tags);
+		this.recognizerExpressionsTestcase = new PatternRecognizer(testCaseRegExp);
+		this.recognizerExpressionsTestsuite = new PatternRecognizer(testSuiteRegExp);
+		this.recognizerTags = new RecognizerTag(tags);
 		this.storage = storage;
 		this.mode = mode;
+		
+		if(this.storage != null)
+			this.storage.setMode(mode);
 	}
 
 	public boolean validateTest(TestCase test) {

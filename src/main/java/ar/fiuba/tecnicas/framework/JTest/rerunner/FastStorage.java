@@ -18,7 +18,7 @@ public class FastStorage extends RerunStorage {
 
 	@Override
 	public boolean isTestRunnable(String testName) {
-		return this.passedTestsNames.contains(testName);
+		return !this.passedTestsNames.contains(testName);
 	}
 
 }
