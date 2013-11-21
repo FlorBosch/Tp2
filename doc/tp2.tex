@@ -52,95 +52,20 @@ $2^{do}$ cuatrimestre de 2013}
 \newpage
 
 \section{Especificación}
-Se propone implementar un framework de testing unitario que provea diferentes
-tipos de aserciones y que notifique los resultados mediante varios reportes en
-diferentes formatos, incluyendo una salida en tiempo real, un documento XML y 
-texto plano.
+Se propone en esta instancia seguir agregando funcionalidades al framework de testing implementado,
+con la diferencia de que esta vez desarrollamos sobre el trabajo de otro grupo. 
 
-Además se requieren funcionalidades adicionales como la de clasificación de tests
-según tags, correrlos condicionalmente según una expresión regular y cronometrar 
-la tardanza de cada uno.
-
-Entre las restricciones se encuentra el no poder usar reflexión para identificar
-y ejecutar los métodos, sino que se debe implementar mediante un modelo de 
-dominio.
-
+Los requerimientos 
+pedidos por la cátedra son ahora un límite de tiempo de corrida, de manera de registrar como fallos
+casos de prueba cuya ejecución exceda un tiempo dado. Además se pide una función de \textit{memoria}
+para recordar aquéllos casos de pruebas que hayan terminado exitosamente, para así ejecutar en una
+corrida posterior los fallados, los que devienen en error y los que se agregan.
 
 \section{Análisis}
-Se debe proveer al usuario un entorno para desarrollar pruebas unitarias, por lo
-que se le deberá brindar al usuario una serie de métodos para realizar 
-verificaciones sobre instancias de sus clases. Se decició poner a disposición 
-del usuario un subconjunto reducido de las aserciones que brinda jUnit 4:\footnote{
-La lista completa de aserciones de jUnit 4 está disponible en: \\
-http://junit.sourceforge.net/javadoc/org/junit/Assert.html}
-	\begin{itemize}
-		\item \textbf{fail}: esta verificación siempre falla, suele usarse para
-			mostrar que hay métodos que no están implementados
-			en su totalidad.
-		\item \textbf{assertTrue} y \textbf{assertFalse}: ambas aserciones toman un 
-			objeto como parámetro y verifican que sea verdadero ó 
-			falso respectivamente.
-		\item \textbf{assertEquals} y \textbf{assertNotEquals}: ambas aserciones toman dos
-			objetos como parámetros y verifican que sean iguales ó 
-			diferentes respectivamente; teniendo en cuenta el método
-			equals() de la clase a probar.
-		\item \textbf{assertSame} y \textbf{assertNotSame}: ambas aserciones toman dos 
-			objetos como parámetros y verifican que sean la misma 
-			o diferente instancia de la clase respectivamente; 
-			comparando sus referencias.
-		\item \textbf{assertNull} y \textbf{assertNotNull}: ambas aserciones toman un 
-			objeto como parámetro y verifican que se trate de una
-			referencia nula o no, respectivamente.
-	\end{itemize}
-	
-Se agregaron más tarde un set de funcionalidades tales como la ejecución de tests de acuerdo a si
-el nombre coincide con una expresión regular, implementación de un fixture (es decir, permitir
-hacer setUp y tearDown) y permitir la carga de test suites en niveles ilimitados.
+Antes de empezar con la implementación, el grupo se propuso entender el 
+funcionamiento del framework 
 
-Finalmente fuimos requeridos tres tipos de salida: por consola en tiempo real, en texto plano, y
-en formato XML siguiendo el esquema usado por jUnit.\footnote{Disponible en
-https://svn.jenkins-ci.org/trunk/hudson/dtkit/dtkit-format/dtkit-junit-model/src/main/resources/
-com/thalesgroup/dtkit/junit/model/xsd/junit-4.xsd}
-	
-\section{Diseño}
-El grupo decidió usar el patrón de diseño composite dado que nos brinda la 
-posibilidad de agrupar clases que contengan a otras clases y que todas compartan
-métodos. De esta manera se permitió que conjuntos de pruebas (test suites) 
-contengan casos de pruebas (test cases).
-
-Así se implementaron las clases troncales del trabajo: BaseTest representa la 
-hoja (leaf) del patrón composite y es la clase abstracta de la que el usuario 
-heredará para correr las pruebas. TestSuite es una clase concreta que toma el 
-rol de composite en el patrón, y que contiene instancias de objetos que 
-implementen la interfaz RunnableTest, el componente en el patrón. 
-
-El cliente de la estructura composite es una clase llamada TestRunner que
-simplemente instancia una nueva clase TestResult y la pasa por parámetro para 
-que se almacene allí la información de la corrida.
-Esta estructura define la base del trabajo práctico.
-
-Una clase adicional, TestInformation, se usa para almacenar las condiciones de 
-ejecución de tests (expresión regular y tags). Además contiene una clase 
-denominada TestResults, en dónde se almacenan los resultados de las corridas y
-una instancia de la clase que maneja la salida, usando una estrategia
-de tipo Parameter Object.
-
-Para cumplir con el requerimiento de fixture se hizo uso del patrón de diseño 
-Template Method, definiendo los métodos tearDown y setUp en la clase padre para
-ser redefinido por los usuarios. Fue necesario exigir que las clases del contexto 
-implementen una interfaz CloneableObject de manera de poder clonarlas y que las
-instancias de TestCase no modifiquen su información (patrón Prototype).
-
-Las salidas las implementa una clase concreta llamada Logger, que contiene 
-información sobre las salidas que el framework tiene a disposición, desacoplando
-de esta manera a los tests de las salidas que se puedan agregar o quitar en un
-futuro, cumpliendo con el principio de código abierto a extensiones y cerrado
-a cambios. Las tres salidas que se implementan (XMLOutput, FileTestOutput y
-RealTimeTestOutput) implementan una clase abstracta TestOutput; todas disponibles
-en el paquete Output.
-
-Se muestra en la figura 1 el diagrama de clases final del trabajo práctico.
-
+nice to have: diagramas de clases inicial y final.
 \begin{figure}[h!]
 \begin{center}
 	\includegraphics[scale=0.50,angle=90]{./ClassDiagram3}
@@ -148,40 +73,12 @@ Se muestra en la figura 1 el diagrama de clases final del trabajo práctico.
 	\caption{diagrama de clases del trabajo práctico (entrega 3).}
 \end{figure}
 
-\subsection{Responsabilidades de las clases}
-Se describe a continuación la responsabilidad de cada clase:
-\begin{itemize}
-	\item \textbf{Assertion}: es la clase que implementa las aserciones.
-
-	\item \textbf{TestCase}: es la encargada de correr cada test unitario.
-		Las clases que hereden de ella implementarán el código que 
-		ejecuta las pruebas. 
-				
-	\item \textbf{TestContext}: esta clase contiene las instancias creadas
-		por los usuarios a la hora de hacer setUps, y es utilizada
-		a lo largo de toda la ejecución.
-		
-	\item \textbf{TextInformation}: es clase introducida para 
-		encapsular la información de los test corridos anteriormente,
-		los filtros de ejecución del usuario y la instancia de TestLogger
-		para guardar los resultados.
-		
-	\item \textbf{TestLogger}: es la clase que desacopla a los tests en sí de
-		las salidas que se usen para los resultados.
-		
-	\item \textbf{TestOutput}: es la encargada de interpretar los resultados
-		y producir una salida legible.		
-			
-	\item \textbf{TestResults}: es una clase almacenadora de información
-		sobre la ejecución de las pruebas.
 	
-	\item \textbf{TestRunner}: es el cliente en el esquema composite, crea
-		una instancia de TestResults, ejecuta un TestSuite y luego
-		muestra los resultados usando un TestOutput.	
-		
-	\item \textbf{TestSuite}: es la clase contenedora de todos los tests.
-		Permite agregar tests y correrlos.
+\section{Diseño}
 
+\subsection{Responsabilidades de las clases agregadas}
+Se describe a continuación la responsabilidad de cada clase nueva:
+\begin{itemize}
 \end{itemize}
 
 \section{Pruebas}
