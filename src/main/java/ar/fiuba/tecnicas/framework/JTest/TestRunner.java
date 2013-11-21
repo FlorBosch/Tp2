@@ -60,7 +60,7 @@ public class TestRunner {
 		TestRunner.testCreator = testCreator;
 	}
 
-	public void run(String args[]) {
+	public int run(String args[]) {
 		TestConditions conditions = new TestConditions();
 		conditions.initialize(regExpTestcase, regExpTestsuite, argtags, storage, rerunMode);
 		
@@ -69,27 +69,25 @@ public class TestRunner {
 			argvalidate.start();
 			testReport = start(conditions);
 			storage.saveRunInformation();
-			if (!testReport.wasSuccessful()) {
-				System.exit(FAILURE_EXIT);
-			}
-			System.exit(SUCCESS_EXIT);
 		}
 
 		catch (PatternSyntaxException patternexcp) {
 			System.err.println("Invalid regular expression 's syntax");
-			System.exit(EXCEPTION_EXIT);
+			return EXCEPTION_EXIT;
 		}
 
 		catch (IllegalArgumentException badarg) {
 			Usage usage = new Usage();
 			System.err.println(usage);
-			System.exit(EXCEPTION_EXIT);
+			return EXCEPTION_EXIT;
 		}
 
 		catch (Throwable e) {
 			System.err.println(e.getMessage());
-			System.exit(EXCEPTION_EXIT);
+			return EXCEPTION_EXIT;
 		}
+		
+		return testReport.wasSuccessful() ? SUCCESS_EXIT : FAILURE_EXIT;
 	}
 
 	private Test getTest() throws Exception {

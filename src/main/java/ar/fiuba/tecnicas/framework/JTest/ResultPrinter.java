@@ -19,6 +19,7 @@ public class ResultPrinter implements TestListener {
 		printStream.println("Run: " + result.runCount());
 		printStream.println("Failures: " + result.failureCount());
 		printStream.println("Errors: " + result.errorCount());
+		printStream.println();
 	}
 
 	@Override
