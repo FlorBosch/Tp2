@@ -74,7 +74,6 @@ public class TestReport {
 	    } catch (TimeOutException timeOutException) {
 		addFailure(test, timer.getTime(), timeOutException);
 	    } catch (Throwable exception) {
-		System.out.println(exception);
 		addError(test, timer.getTime(), exception);
 	    }
 	}
