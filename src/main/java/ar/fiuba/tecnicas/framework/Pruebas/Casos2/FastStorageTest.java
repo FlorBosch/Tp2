@@ -11,32 +11,38 @@ import ar.fiuba.tecnicas.framework.JTest.rerunner.RerunMode;
 
 public class FastStorageTest implements TestCreator {
 
-	@Override
-	public Test getTest() throws Exception {
-		TestSuite suite = new TestSuite("Suite");
-		TestCase test1 = new MyTestCase("Test that doesn't fail (1)");
-		TestCase test2 = new FailedTestCase("Test that fails (2)");
-		TestCase test3 = new MyTestCase("Test that doesn't fail (3)");
+    @Override
+    public Test getTest() throws Exception {
+	TestSuite suite = new TestSuite("Suite");
+	TestCase test1 = new MyTestCase("Test that doesn't fail (1)");
+	TestCase test2 = new FailedTestCase("Test that fails (2)");
+	TestCase test3 = new MyTestCase("Test that doesn't fail (3)");
 
-		suite.addTest(test1);
-		suite.addTest(test2);
-		suite.addTest(test3);
+	suite.addTest(test1);
+	suite.addTest(test2);
+	suite.addTest(test3);
 
-		return suite;
-	}
-	
-	public static void main(String args[]) {
-		Timer.timeOut = 1000000;
-		
-		TestCreator creatorTest = new XMLStorageTest();
-		TestRunner runner = new TestRunner();
-		
-		runner.setRerunStorage(new PlainFileStorage());
-		// La prueba se hace a mano, primero hay que correrla con RECORD y luego con RERUN (cambiar!)
-		runner.setRerunMode(RerunMode.RERUN);
-		
-		runner.setCreatorTest(creatorTest);
-		runner.run(args);
-	}
+	return suite;
+    }
+    
+    public static void main(String args[]) {
+	Timer.setTimeOut(2000);
+
+	TestCreator creatorTest = new FastStorageTest();
+	TestRunner runner = new TestRunner();
+
+	/* Se setea el storage que se va a usar para persistir los datos */
+	runner.setRerunStorage(new PlainFileStorage());
+
+	/* Se setea el modo para recordar la corrida */
+	runner.setRerunMode(RerunMode.RECORD);
+	runner.setCreatorTest(creatorTest);
+	runner.run(args);
+
+	/* Se vuelve a correr seteando el modo de leer de corridas anteriores */
+	runner.setRerunMode(RerunMode.RERUN);
+	runner.run(args);
+
+    }
 
 }
