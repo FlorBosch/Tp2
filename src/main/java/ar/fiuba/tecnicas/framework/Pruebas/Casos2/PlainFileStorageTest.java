@@ -51,7 +51,7 @@ public class PlainFileStorageTest implements TestCreator {
 	}
 
 	public static void main(String args[]) {
-		Timer.timeOut = 1000000;
+		Timer.setTimeOut(2000);
 		
 		RerunStorage storage = new PlainFileStorage();
 

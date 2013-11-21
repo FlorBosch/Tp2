@@ -8,81 +8,81 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class TestCase extends Test {
-	private List<String> tags;
-	private boolean skip;
+    private List<String> tags;
+    private boolean skip;
 
-	public TestCase(String testname) {
-		super(testname);
-		tags = new ArrayList<String>();
-		skip = false;
+    public TestCase(String testname) {
+	super(testname);
+	tags = new ArrayList<String>();
+	skip = false;
+    }
+
+    public TestCase(String testname, List<String> tags) {
+	super(testname);
+	this.tags = tags;
+    }
+
+    @Override
+    public void run(TestReport testReport) {
+	testReport.run(this);
+    }
+
+    @Override
+    public int countTestCases() {
+	return 1;
+    }
+
+    public abstract void runTest();
+
+    public void runTestSequence() throws Throwable {
+	Throwable exception = null;
+	setUp();
+	try {
+	    runTest();
+	} catch (Throwable running) {
+	    exception = running;
+	} finally {
+	    tearingDown(exception);
 	}
+	if (exception != null)
+	    throw exception;
 
-	public TestCase(String testname, List<String> tags) {
-		super(testname);
-		this.tags = tags;
-	}
+    }
 
-	@Override
-	public void run(TestReport testReport) {
-		testReport.run(this);
-		testReport.setFirsttimeintest(false);
-	}
+    public void addTag(String tag) {
+	tags.add(tag);
+    }
 
-	@Override
-	public int countTestCases() {
-		return 1;
-	}
+    public void addAllTags(List<String> tags) {
+	this.tags.addAll(tags);
+    }
 
-	public abstract void runTest();
+    public boolean containsTag(String tag) {
+	return tags.contains(tag);
+    }
 
-	public void runTestSequence() throws Throwable {
-		Throwable exception = null;
-		setUp();
-		try {
-			runTest();
-		} catch (Throwable running) {
-			exception = running;
-		} finally {
-			tearingDown(exception);
-		}
-		if (exception != null)
-			throw exception;
-	}
+    public boolean containsAllTags(List<String> tags) {
+	return this.tags.containsAll(tags);
+    }
 
-	public void addTag(String tag) {
-		tags.add(tag);
-	}
+    public List<String> getTags() {
+	return tags;
+    }
 
-	public void addAllTags(List<String> tags) {
-		this.tags.addAll(tags);
-	}
+    @Override
+    public String toString() {
+	return getTestname();
+    }
 
-	public boolean containsTag(String tag) {
-		return tags.contains(tag);
-	}
+    public void skip() {
+	skip = true;
+    }
 
-	public boolean containsAllTags(List<String> tags) {
-		return this.tags.containsAll(tags);
-	}
+    public void unSkip() {
+	skip = false;
+    }
 
-	public List<String> getTags() {
-		return tags;
-	}
-
-	@Override
-	public String toString() {
-		return getTestname();
-	}
-
-	public void skip() {
-		skip = true;
-	}
-
-	public void unSkip() {
-		skip = false;
-	}
-
-	public boolean isSkip() {
-		return skip;
-	}
+    public boolean isSkip() {
+	return skip;
+    }
 }
