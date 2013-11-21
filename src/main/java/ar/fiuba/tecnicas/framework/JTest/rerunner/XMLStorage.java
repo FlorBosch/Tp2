@@ -18,7 +18,7 @@ import org.w3c.dom.NodeList;
 
 public class XMLStorage extends RerunStorage {
 
-	private String fileName = "store.xml";
+	private static final String fileName = "store.xml";
 	private List<String> passedTests;
 
 	public XMLStorage() {

@@ -8,8 +8,9 @@ import ar.fiuba.tecnicas.framework.JTest.TestSuite;
 import ar.fiuba.tecnicas.framework.JTest.Timer;
 import ar.fiuba.tecnicas.framework.JTest.rerunner.PlainFileStorage;
 import ar.fiuba.tecnicas.framework.JTest.rerunner.RerunMode;
+import ar.fiuba.tecnicas.framework.JTest.rerunner.RerunStorage;
 
-public class FastStorageTest implements TestCreator {
+public class PlainFileStorageTest implements TestCreator {
 
 	@Override
 	public Test getTest() throws Exception {
@@ -25,18 +26,37 @@ public class FastStorageTest implements TestCreator {
 		return suite;
 	}
 	
-	public static void main(String args[]) {
-		Timer.timeOut = 1000000;
-		
-		TestCreator creatorTest = new XMLStorageTest();
+	private static void firstRun(RerunStorage storage) {
+		TestCreator creatorTest = new PlainFileStorageTest();
 		TestRunner runner = new TestRunner();
+		String args[] = {};
 		
-		runner.setRerunStorage(new PlainFileStorage());
-		// La prueba se hace a mano, primero hay que correrla con RECORD y luego con RERUN (cambiar!)
+		runner.setRerunStorage(storage);
+		runner.setRerunMode(RerunMode.RECORD);
+		
+		runner.setCreatorTest(creatorTest);
+		runner.run(args);
+	}
+	
+	private static void secondRun(RerunStorage storage) {
+		TestCreator creatorTest = new PlainFileStorageTest();
+		TestRunner runner = new TestRunner();
+		String args[] = {};
+		
+		runner.setRerunStorage(storage);
 		runner.setRerunMode(RerunMode.RERUN);
 		
 		runner.setCreatorTest(creatorTest);
 		runner.run(args);
+	}
+
+	public static void main(String args[]) {
+		Timer.timeOut = 1000000;
+		
+		RerunStorage storage = new PlainFileStorage();
+
+		firstRun(storage);
+		secondRun(storage);
 	}
 
 }
