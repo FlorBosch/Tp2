@@ -77,13 +77,14 @@ Se identificaron los siguientes problemas:
 			\item El código contenía warnings referidos a un mal uso de la genericidad de Java.
 			
 			\item Maven no compilaba debido a la omisión de la dependendencia que incluye el paquete 
-				com.sun.javaws.
-				
+				com.sun.javaws.				
 		\end{itemize}
 		
 		Estos dos errores fueron los primeros en ser solucionados.
 		
-	\item \textbf{Documentación escasa:} 
+	\item \textbf{Documentación escasa:} el código casi no contenía comentarios salvo la descripción de las
+		responsabilidades de cada clase y la documentación entregada era escasa y obsoleta; 
+		por ejemplo el diagrama de clases no se ajustaba al código entregado.
 		
 	\item \textbf{Errores funcionales:} se detectaron varias situaciones en dónde el comportamiento
 		no es el esperado de un framework de testing:
@@ -129,28 +130,59 @@ Se identificaron los siguientes problemas:
 \end{itemize}
 
 
+\section{Diseño}
+Se refactorizó parte del código para que sea más sencillo implementar las funcionalidades nuevas,
+permitiendo, además, que el trabajo no esté tan cerrado ante cambios.
+
+La clase TestReport, que antes tenía varias responsabilidades, ahora está dividida en TestConditions
+que sirve para determinar si un test debe ser corrido o no.
+
+Se muestra en la figura 1 un diagrama de clases del trabajo.
 \begin{figure}[h!]
 \begin{center}
-	\includegraphics[scale=0.50,angle=90]{./ClassDiagram3}
+	\includegraphics[scale=0.35,angle=90]{./ClassDiagram}
 \end{center}
 	\caption{diagrama de clases del trabajo práctico (entrega 3).}
 \end{figure}
 
-	
-\section{Diseño}
+\subsection{Storage}
+Esta funcionalidad fue implementada en el paquete \textit{rerunner}. Se trata de una clase
+abstracta RerunStorage que define varios métodos abstractos: para agregar tests como 
+ejecutados con éxito (de manera de no volver a correrlos), y para saber si un test se debe
+volver a ejecutar o no. Además, permite redefinir métodos de inicialización y fin, en caso
+de que el Storage lo permita. Esta interfaz simplifica la adición de Storages nuevos.
 
-\subsection{Responsabilidades de las clases agregadas}
-Se describe a continuación la responsabilidad de cada clase nueva:
-\begin{itemize}
-\end{itemize}
+Una clase enumeradora sirve para indicar en qué modo funcionará el framework, pudiendo ser
+en modo grabación (RECORD), en modo de volver a correr (RERUN) o simplemente ignorando la
+persistencia (NONE).
 
-\section{Pruebas}
-Blah
-	
+Se incluyen implementados tres storages: FastStorage, que no persiste, sino que almacena en
+memoria; XMLStorage que persiste en un archivo XML y PlainFileStorage que persiste en un
+archivo de texto plano.
+
+\subsection{Restricción temporal}
+La funcionalidad de timeout se implementó añadiendo un atributo de clase a Timer, que establece
+el tiempo máximo que puede tardar un caso de prueba, lanzando una excepción propia (TimeoutException) 
+cuando se viola. 
+Este atributo puede ser establecido por el cliente.
+
+\subsection{Pruebas}
+Se agregó el primer test unitario del framework en jUnit, llamado FrameworkTest, que contiene
+las funcionalidades implementadas por el grupo; además de casos de prueba usando el mismo framework.
+
 \section{Conclusiones}
 Durante el desarrollo del trabajo práctico nos tuvimos que enfrentar con
-código no escrito por nosotros 
+código no escrito por nosotros, notando la importancia de algunos conceptos desarrollados
+en la materia.
 
-importancia del código bien documentado, documentación actualizada, importancia del principio abierto/cerrado, importancia de un
-set de pruebas unitarias, código legacy por primera vez
+Por ejemplo, la falta de pruebas unitarias implicó que tuvimos que perder mucho tiempo 
+simulando situaciones dado que no podíamos asegurar que nuestras modificaciones no afectaran
+comportamiento antiguo. 
+
+El diseño estaba muy cerrado ante extensiones, significando que sea necesario refactorizar 
+previo a introducir funcionalidades. Tampoco contábamos con ningún tipo de documentación que nos 
+ayudase a entender el código.
+
+Concluimos en la utilidad de los conceptos que se dan en la teórica para producir software 
+fácil de mantener.
 \end{document}
