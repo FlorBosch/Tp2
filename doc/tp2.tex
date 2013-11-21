@@ -59,11 +59,34 @@ Los requerimientos
 pedidos por la cátedra son ahora un límite de tiempo de corrida, de manera de registrar como fallos
 casos de prueba cuya ejecución exceda un tiempo dado. Además se pide una función de \textit{memoria}
 para recordar aquéllos casos de pruebas que hayan terminado exitosamente, para así ejecutar en una
-corrida posterior los fallados, los que devienen en error y los que se agregan.
+corrida posterior los fallados, los que devienen en error y los que se agregan. Es necesario ofrecer
+dos tipos de \textit{Store}, y preferentemente una manera sencilla para que el usuario pueda agregar más.
 
-\section{Análisis}
-Antes de empezar con la implementación, el grupo se propuso entender el 
-funcionamiento del framework 
+\section{Análisis de la implementación del grupo 2}
+Antes de empezar con la implementación de las funcionalidades nuevas, el grupo se propuso entender el 
+funcionamiento del framework.
+
+\subsection{Problemas encontrados}
+Se identificaron los siguientes problemas:
+
+\begin{itemize}
+	\item \textbf{Uso de herramientas tecnológicas:} en la clase TestSuite, a la hora de exportar
+		el reporte se usa reflexión para diferenciar el tipo del Test pasado por parámetro,
+		pudiendo ser alguna de las dos clases que heredan de ella: TestCase o TestSuite.
+		Vemos esto como una violación grave del paradigma de orientación a objetos y de la
+		consigna del enunciado.
+	
+	\item \textbf{Cantidad escasa de pruebas:} notamos que el trabajo tiene muy pocas pruebas
+		implementadas, resultando dificultosa la tarea de añadir funcionalidades y
+		de refactorizar, dado que no podemos asegurar el funcionamiento correcto del trabajo
+		después de haber modificado o agregado código.		 
+
+	\item \textbf{Estilo:} muchas variables no respetan la convención \textit{camelCase} 
+		de Java, y el estilo de ubicación de llaves y demás no es coherente en el
+		código.
+		
+\end{itemize}
+
 
 nice to have: diagramas de clases inicial y final.
 \begin{figure}[h!]
@@ -82,61 +105,9 @@ Se describe a continuación la responsabilidad de cada clase nueva:
 \end{itemize}
 
 \section{Pruebas}
-Se incluyen con la implementación varios sets de pruebas:
-
-	\begin{enumerate}
-	\item Pruebas unitarias: estas pruebas verifican el funcionamiento de 
-	las clases desarrolladas usando jUnit 4. 
-	
-	Se intentó alcanzar una cobertura del 100\% del código con pruebas 
-	unitarias, sin embargo se notó que había varias clases muy simples como 
-	TestResult que probarlas pareció inútil.
-
-	\item Pruebas de entorno: la intención de estas pruebas fue probar una 
-	clase externa como lo haría el usuario.
-	Se creo una clase con un comportamiento trivial y se generaron casos de
-	prueba para después correrlos. 
-	
-	Se insertaron tanto pruebas que corren correctamente como pruebas que
-	fallan, de manera de mostrar el funcionamiento completo del entorno.
-	
-	El mismo de set de pruebas se corrió con jUnit 4 para mostrar que 
-	efectivamente los resultados obtenidos son equivalentes.
-		\begin{enumerate}
-		\item Pruebas de comparación: que verifican que funcione 
-		correctamente las aserciones del framework ante diferentes 
-		situaciones.
-		\item Pruebas de anidación: que verifican que se ejecuten todos
-		los casos de prueba en una corrida, anidando varios niveles
-		de suites con casos.
-		\item Pruebas de expresiones regulares: que verifican que se
-		respete que sólo se corran aquéllas pruebas que cumplan con
-		la expresión regular indicada.
-		\item Pruebas de fixture: que verifican que se respeten los setUps
-		y los tearDowns que corresponden para cada corrida.
-		\end{enumerate}
-	\end{enumerate}
-
-	Se realizaron pruebas sobre las nuevas funcionalidades del framework, como
-	 es la ejecución de tests con filtro de TAGS y nombre que cumplan con una expresión 
-	regular, tests que poseen el TAG SKIP, y casos de pruebas verificando el tiempo de
-	 los tests. Estos casos de prueba se encuentran en la clase FrameworkTest, intentando
-	 alcanzar en la misma una cobertura del 100\% del framework.
+Blah
 	
 \section{Conclusiones}
-Durante el desarrollo del trabajo pudimos aplicar los conceptos adquiridos a lo
-largo de la materia para hacer un código más mantenible, más legible y más
-estandarizado que el que hubiéramos escrito antes de cursar.
-
-Pudimos verificar que el diseño que implementamos en la primera entrega estaba
-abierto a modificaciones y cerrado ante cambios porque las extensiones de los
-requerimientos las pudimos hacer casi sin tocar código existente.
-
-También hicimos uso extensivo de las herramientas que nos ofrece el IDE según lo
-visto en las clases prácticas, como por ejemplo a la hora de refactorizar.
-
-Finalmente pudimos apreciar las ventajas de tener desde el primer momento un set
-de pruebas confiable, pues pudimos estar seguros en todo momento de que las 
-modificaciones que introducíamos no hacían que código antiguo dejara de funcionar.
-
+importancia del código bien documentado, documentación actualizada, importancia del principio abierto/cerrado, importancia de un
+set de pruebas unitarias, código legacy por primera vez
 \end{document}
